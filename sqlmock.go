@@ -14,6 +14,7 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"testing"
 	"time"
 )
 
@@ -209,6 +210,16 @@ func (c *sqlmock) ExpectationsWereMet() error {
 		}
 	}
 	return nil
+}
+
+type testingFatal interface {
+	Fatal(args ...interface{})
+}
+
+func (c *sqlmock) AssertExpectations(t testingFatal) {
+	if err := c.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
 }
 
 // Begin meets http://golang.org/pkg/database/sql/driver/#Conn interface
